@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabina Neupane | Geomatics Portfolio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Leaflet CSS for WebGIS Dashboard -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f5f2ea;
+    padding:30px;
+    color:#333;
+}
+
+.cv-container{
+    max-width:1200px;
+    margin:auto;
+    background:white;
+    display:grid;
+    grid-template-columns:340px 1fr;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 8px 30px rgba(0,0,0,0.1);
+}
+
+/* LEFT SIDE */
+
+.left{
+    background:#556b2f;
+    color:white;
+    padding:35px;
+}
+
+.profile{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.profile img{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    object-fit:cover;
+    border:6px solid #d8cbb5;
+}
+
+.name{
+    margin-top:20px;
+    font-size:28px;
+    font-weight:700;
+}
+
+.title{
+    font-size:15px;
+    margin-top:10px;
+    color:#f4e7c1;
+}
+
+.section{
+    margin-top:30px;
+}
+
+.section h3{
+    margin-bottom:12px;
+    color:#f4e7c1;
+    font-size:18px;
+    border-bottom:1px solid rgba(255,255,255,0.3);
+    padding-bottom:6px;
+}
+
+.section a{
+    color:#f4e7c1;
+    text-decoration:underline;
+    font-weight:600;
+}
+
+.section a:hover{
+    color:white;
+}
+
+.section ul{
+    padding-left:18px;
+}
+
+/* RIGHT SIDE */
+
+.right{
+    padding:40px;
+}
+
+.right-section{
+    margin-bottom:35px;
+}
+
+.right-section h2{
+    color:#556b2f;
+    margin-bottom:15px;
+    border-bottom:3px solid #d8cbb5;
+    padding-bottom:8px;
+}
+
+.right-section p{
+    line-height:1.9;
+}
+
+.right-section ul{
+    padding-left:20px;
+}
+
+.right-section li{
+    margin-bottom:10px;
+    line-height:1.8;
+}
+
+.education-item{
+    margin-bottom:20px;
+}
+
+.education-item strong{
+    color:#556b2f;
+}
+
+.project-title{
+    font-weight:600;
+    color:#556b2f;
+}
+
+/* ===== WEBGIS DASHBOARD STYLES ===== */
+.webgis-container {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+#map {
+    height: 450px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    z-index: 1;
+}
+
+.dashboard-description {
+    margin-top: 12px;
+    padding: 10px;
+    background: #f8f6f0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+}
+
+.info-panel {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    min-width: 250px;
+    backdrop-filter: blur(5px);
+    border-left: 4px solid #556b2f;
+    pointer-events: none;
+    font-size: 13px;
+}
+
+.info-panel h4 {
+    margin-bottom: 8px;
+    color: #556b2f;
+    font-size: 14px;
+}
+
+.info-panel p {
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.legend-custom {
+    background: rgba(255,255,255,0.95);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.legend-custom i {
+    width: 18px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 6px;
+    border-radius: 2px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .cv-container {
+        grid-template-columns: 1fr;
+    }
+    .right {
+        padding: 25px;
+    }
+    .info-panel {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    #map {
+        height: 350px;
+    }
+}
+
+.footer{
+    grid-column:1 / -1;
+    color:#5a970b;
+    text-align:center;
+    padding:20px;
+    font-size:14px;
+}
+
+.footer p{
+    margin:5px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="cv-container">
+
+    <!-- LEFT SIDE (Your Profile) -->
+    <div class="left">
+        <div class="profile">
+            <img src="profile.jpeg" alt="Sabina Neupane">
+            <div class="name">Sabina Neupane</div>
+            <div class="title">Geomatics Engineering Undergraduate</div>
+        </div>
+
+        <div class="section">
+            <h3>Contact</h3>
+            <p>+977-9844827983</p>
+            <p>neupanesabina598@gmail.com</p>
+            <p>Dhulikhel, Nepal</p>
+            <p><a href="https://www.linkedin.com/in/sabina-neupane-8bb2462bb/" target="_blank">LinkedIn Profile</a></p>
+        </div>
+
+        <div class="section">
+            <h3>GIS & Geospatial</h3>
+            <ul>
+                <li>ArcGIS Pro</li>
+                <li>QGIS</li>
+                <li>Remote Sensing</li>
+                <li>Spatial Analysis</li>
+                <li>Cartography</li>
+                <li>WebGIS</li>
+                <li>GPS Survey</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Programming</h3>
+            <ul>
+                <li>Python</li>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>C</li>
+                <li>C++</li>
+                <li>Java</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Database</h3>
+            <ul>
+                <li>PostgreSQL</li>
+                <li>PostGIS</li>
+                <li>Data Management</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Professional Skills</h3>
+            <ul>
+                <li>Leadership</li>
+                <li>Communication</li>
+                <li>Teamwork</li>
+                <li>Project Management</li>
+                <li>Time Management</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+        <div class="right-section">
+            <h2>Professional Profile</h2>
+            <p>Motivated Geomatics Engineering undergraduate at Kathmandu University with strong interests in Geographic Information Systems (GIS), Remote Sensing, Land Administration, Cartography and WebGIS development. Skilled in spatial data collection, mapping, visualization and geospatial analysis through academic and project-based work.</p>
+        </div>
+
+        <!-- ===== FEATURED WEBGIS PROJECT (CHOROPLETH MAP) ===== -->
+        <div class="right-section">
+            <h2>🗺️ Featured WebGIS Project</h2>
+            <p><strong>Nepal Population Density Dashboard</strong> – Interactive choropleth map showing district-wise population distribution.</p>
+            
+            <div class="webgis-container">
+                <!-- Map will load here -->
+                <div id="map"></div>
+                
+                <!-- Floating Info Panel (will be created by JS) -->
+                
+                <div class="dashboard-description">
+                    ✅ <strong>Technical Features:</strong> Leaflet.js | Choropleth Mapping | Real-time Hover Info | GeoJSON | Population Density Analysis
+                </div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <h2>Education</h2>
+            <div class="education-item">
+                <strong>Kathmandu University</strong><br>
+                Bachelor in Geomatics Engineering<br>
+                2022 – Present
+            </div>
+            <div class="education-item">
+                <strong>Gyanodaya Secondary School</strong><br>
+                +2 Science<br>
+                2021
+            </div>
+            <div class="education-item">
+                <strong>Jitpur Secondary School</strong><br>
+                SEE<br>
+                2019
+            </div>
+        </div>
+
+        <div class="right-section">
+            <h2>Field Visits</h2>
+            <ul>
+                <li>Survey Office, Lalitpur</li>
+                <li>Land Revenue Office, Lalitpur</li>
+                <li>Topographic Survey Practical Exercises</li>
+                <li>Engineering Survey Field Work</li>
+            </ul>
+        </div>
+
+        <div class="right-section">
+            <h2>Academic Projects</h2>
+            <ul>
+                <li>3D Modeling of Kathmandu University TTC-B</li>
+                <li>Land Use Land Cover Mapping</li>
+                <li>Thematic Mapping Project</li>
+                <li>Forest Fire Risk Assessment in Chitwan National Park</li>
+                <li>AI-Driven Land Tenure Mapping for Sustainable Land Governance</li>
+                <li>Australian Cadastral System and Comparison with Nepal</li>
+            </ul>
+        </div>
+
+        <div class="right-section">
+            <h2>Leadership & Experience</h2>
+            <ul>
+                <li>International Relationship Co-Chair, Rotaract Club of Kathmandu University</li>
+                <li>Junior Site Trainee – Water Tank Construction Project</li>
+                <li>Construction Site Assistant – Building Construction</li>
+                <li>Junior Designer</li>
+            </ul>
+        </div>
+
+        <div class="right-section">
+            <h2>Certifications & Workshops</h2>
+            <ul>
+                <li>Mapathon Participant</li>
+                <li>Hult Prize Volunteer</li>
+                <li>NepGeom Volunteer 2023</li>
+                <li>Rotaract Quiz Organizer 2024</li>
+                <li>Harvard Health Hackathon Volunteer 2026</li>
+                <li>Remote Sensing & Google Earth Engine Workshop</li>
+                <li>TOMTOM-GES Mapping Week</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2026 Sabina Neupane | Geomatics Engineering Portfolio</p>
+    </footer>
+</div>
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- WebGIS Dashboard Script -->
+<script>
+// Initialize the map centered on Nepal
+var map = L.map('map').setView([28.2, 84.0], 7);
+
+// Add base map tiles
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
+    subdomains: 'abcd',
+    maxZoom: 19,
+    minZoom: 6
+}).addTo(map);
+
+// Create custom info panel (floating panel)
+var infoPanel = L.control({ position: 'topright' });
+
+infoPanel.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'info-panel');
+    this._div.innerHTML = '<h4>🏔️ District Information</h4><p>👆 Hover over any district to see details</p>';
+    return this._div;
+};
+
+infoPanel.addTo(map);
+
+// Update info panel function
+function updateInfoPanel(props) {
+    var panel = document.querySelector('.info-panel');
+    if (!panel) return;
+    
+    if (!props || !props.DISTRICT_1) {
+        panel.innerHTML = '<h4>🏔️ District Information</h4><p>👆 Hover over any district to see details</p>';
+        return;
+    }
+    
+    var district = props.DISTRICT_1 || 'Unknown';
+    var population = props.Total || 0;
+    var male = props.Male || 0;
+    var female = props.Female || 0;
+    var density = props.DENSITY || 0;
+    
+    panel.innerHTML = `
+        <h4>🏔️ ${district}</h4>
+        <p><strong>👥 Total:</strong> ${population.toLocaleString()}</p>
+        <p><strong>👨 Male:</strong> ${male.toLocaleString()}</p>
+        <p><strong>👩 Female:</strong> ${female.toLocaleString()}</p>
+        <p><strong>📊 Density:</strong> ${density.toFixed(1)} /km²</p>
+        <p style="font-size:10px; margin-top:5px;">Click district for popup</p>
+    `;
+}
+
+// Color function based on density
+function getColor(density) {
+    if (!density || density === 0) return '#cccccc';
+    return density > 500 ? '#800026' :
+           density > 300 ? '#BD0026' :
+           density > 200 ? '#E31A23' :
+           density > 100 ? '#FC4E2A' :
+           density > 50  ? '#FD8D3C' :
+           density > 20  ? '#FEB24C' :
+           density > 10  ? '#FED976' :
+                           '#FFEDA0';
+}
+
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.DENSITY),
+        weight: 1.5,
+        opacity: 1,
+        color: 'white',
+        fillOpacity: 0.75
+    };
+}
+
+function highlightFeature(e) {
+    var layer = e.target;
+    layer.setStyle({
+        weight: 3,
+        color: '#333',
+        fillOpacity: 0.9
+    });
+    updateInfoPanel(layer.feature.properties);
+}
+
+function resetHighlight(e) {
+    geojsonLayer.resetStyle(e.target);
+    updateInfoPanel(null);
+}
+
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: function(e) {
+            var p = feature.properties;
+            layer.bindPopup(`
+                <b>${p.DISTRICT_1}</b><br>
+                Population: ${(p.Total || 0).toLocaleString()}<br>
+                Density: ${(p.DENSITY || 0).toFixed(1)} /km²
+            `).openPopup();
+        }
+    });
+}
+
+var geojsonLayer;
+
+// Load GeoJSON
+fetch('data/nepal_final.geojson')
+    .then(response => response.json())
+    .then(data => {
+        console.log('GeoJSON loaded:', data.features.length, 'districts');
+        geojsonLayer = L.geoJson(data, {
+            style: style,
+            onEachFeature: onEachFeature
+        }).addTo(map);
+        map.fitBounds(geojsonLayer.getBounds());
+    })
+    .catch(error => {
+        console.error('Error loading GeoJSON:', error);
+        var panel = document.querySelector('.info-panel');
+        if (panel) {
+            panel.innerHTML = '<h4>⚠️ Error</h4><p>GeoJSON file not found. Make sure data/nepal_final.geojson exists.</p>';
+        }
+    });
+
+// Add legend
+var legend = L.control({ position: 'bottomright' });
+
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'legend-custom');
+    var densities = [0, 10, 20, 50, 100, 200, 300, 500];
+    div.innerHTML = '<strong>📊 Population Density</strong><br><span style="font-size:10px;">(people/km²)</span><br>';
+    for (var i = 0; i < densities.length; i++) {
+        var from = densities[i];
+        var to = densities[i+1];
+        var color = getColor(from + 1);
+        var label = from === 0 ? '< 10' : (to ? from + '–' + to : from + '+');
+        div.innerHTML += '<i style="background:' + color + '"></i> ' + label + '<br>';
+    }
+    return div;
+};
+
+legend.addTo(map);
+
+// Add scale bar
+L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(map);
+</script>
+
+</body>
+</html>
